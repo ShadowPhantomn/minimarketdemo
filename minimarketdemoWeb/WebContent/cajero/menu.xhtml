@@ -13,8 +13,11 @@
 	<h:form>
 		<p:menubar>
 			<p:menuitem value="Regresar" icon="pi pi-home" action="/menu" />
-			<p:menuitem value="Ver bitácora" icon="pi pi-book"
-				action="#{beanAudBitacora.actionCargarMenuBitacora()}" />
+			<p:menuitem value="Gestion Proveedores" icon="pi pi-home" action="/proveedores"/>
+			<p:menuitem value="Facturas de Compra" icon="pi pi-home" />
+			<p:menuitem value="Reportes de Proveedores" icon="pi pi-home" />
+			<p:menuitem value="Reportes de Facturas" icon="pi pi-home" />
+			
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
