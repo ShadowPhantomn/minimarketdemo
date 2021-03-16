@@ -9,11 +9,13 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import minimarketdemo.model.auditoria.managers.ManagerAuditoria;
 import minimarketdemo.model.core.entities.ThmCargo;
 import minimarketdemo.model.core.entities.ThmEmpleado;
 import minimarketdemo.model.core.entities.ThmRolCabecera;
 import minimarketdemo.model.core.entities.ThmRolDetalle;
 import minimarketdemo.model.core.managers.ManagerDAO;
+import minimarketdemo.model.seguridades.dtos.LoginDTO;
 import minimarketdemo.model.seguridades.managers.ManagerSeguridades;
 import minimarketdemo.model.thumano.dtos.DTOThmCargo;
 
@@ -31,6 +33,8 @@ public class ManagerTHumano {
 	private ManagerDAO mDAO;
 	@EJB
 	private ManagerSeguridades mSeguridades;
+	@EJB
+	private ManagerAuditoria mAuditoria;
 
 	/**
 	 * Default constructor.
@@ -81,8 +85,22 @@ public class ManagerTHumano {
 	public List<ThmRolCabecera> findAllThmRolCabecera() {
 		return mDAO.findAll(ThmRolCabecera.class);
 	}
+	
+	public String generarRolPagosExterno() {
+		LoginDTO loginDTO=new LoginDTO();
+		loginDTO.setCorreo("gerente@minimarketdemo.com");
+		loginDTO.setDireccionIP("143.255.250.17");
+		loginDTO.setIdSegUsuario(3);
+		try {
+			generarRolPagos(loginDTO, "202103");
+			return "{\"mensaje\":\"400 - Generacion ok\"}";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{\"mensaje\":\"200 -"+e.getMessage()+" \"}";
+		}
+	}
 
-	public void generarRolPagos(String periodoRol) throws Exception {
+	public void generarRolPagos(final LoginDTO loginDTO,String periodoRol) throws Exception {
 		// Iteramos la lista de empleados:
 		List<ThmEmpleado> listaEmpleados = findAllThmEmpleado();
 		if (listaEmpleados.size() == 0)
@@ -103,6 +121,7 @@ public class ManagerTHumano {
 			
 			generarDetalleRolPagos(cab, empleado);
 			mDAO.insertar(cab);
+			mAuditoria.mostrarLog(loginDTO, getClass(), "generarRolPagos", "Rol pagos generado: "+periodoRol+"/"+cab.getThmEmpleado().getSegUsuario().getCorreo());
 		}
 	}
 

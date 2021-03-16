@@ -3,11 +3,13 @@ package minimarketdemo.controller.seguridades;
 import java.io.IOException;
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 import minimarketdemo.controller.JSFUtil;
 import minimarketdemo.model.core.entities.SegModulo;
@@ -20,6 +22,8 @@ public class BeanSegLogin implements Serializable {
 	private int idSegUsuario;
 	private String clave;
 	private LoginDTO loginDTO;
+	private String direccionIP;
+	
 	@EJB
 	private ManagerSeguridades mSeguridades;
 	
@@ -28,9 +32,21 @@ public class BeanSegLogin implements Serializable {
 		
 	}
 	
+	@PostConstruct
+	public void inicializar() {
+		HttpServletRequest req=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		String agente=req.getHeader("user-agent");
+		String ipAddress = req.getHeader( "X-FORWARDED-FOR" );
+		if ( ipAddress == null ) {
+		    ipAddress = req.getRemoteAddr();
+		}
+		direccionIP=ipAddress;
+	}
+	
 	public String actionLogin() {
 		try {
-			loginDTO=mSeguridades.login(idSegUsuario, clave);
+			loginDTO=mSeguridades.login(idSegUsuario, clave, direccionIP);
+			loginDTO.setDireccionIP(direccionIP);
 			return "menu?faces-redirect=true";
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
@@ -44,7 +60,7 @@ public class BeanSegLogin implements Serializable {
 	}
 	
 	public String actionCerrarSesion(){
-		mSeguridades.cerrarSesion(loginDTO.getIdSegUsuario());
+		mSeguridades.cerrarSesion(loginDTO);
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		return "/login?faces-redirect=true";
 	}

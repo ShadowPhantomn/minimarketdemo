@@ -7,9 +7,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import minimarketdemo.controller.JSFUtil;
+import minimarketdemo.controller.seguridades.BeanSegLogin;
 import minimarketdemo.model.core.entities.SegUsuario;
 import minimarketdemo.model.core.entities.ThmCargo;
 import minimarketdemo.model.core.entities.ThmEmpleado;
@@ -27,6 +29,8 @@ public class BeanTHumanoRolPagos implements Serializable {
 	private List<String> listaPeriodosRol;
 	private List<ThmRolCabecera> listaRolCabeceras;
 	private String periodoRolSeleccionado;
+	@Inject
+	private BeanSegLogin beanSegLogin;
 	
 	
 	@PostConstruct
@@ -48,7 +52,7 @@ public class BeanTHumanoRolPagos implements Serializable {
 	
 	public void actionListenerGenerarRolPagos() {
 		try {
-			mTHumano.generarRolPagos(periodoRolSeleccionado);
+			mTHumano.generarRolPagos(beanSegLogin.getLoginDTO(),periodoRolSeleccionado);
 			listaRolCabeceras=mTHumano.findAllThmRolCabecera();
 			JSFUtil.crearMensajeINFO("Rol generado exitosamente.");
 		} catch (Exception e) {
