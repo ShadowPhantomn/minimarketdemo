@@ -2,7 +2,8 @@ package minimarketdemo.model.core.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.math.BigDecimal;
+import java.util.Date;
 
 
 /**
@@ -20,8 +21,19 @@ public class Factura implements Serializable {
 	@Column(name="id_factura", unique=true, nullable=false)
 	private Integer idFactura;
 
+	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_factura", nullable=false)
-	private Timestamp fechaFactura;
+	private Date fechaFactura;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="fecha_vencimiento")
+	private Date fechaVencimiento;
+
+	@Column(name="tipo_factura", nullable=false, length=15)
+	private String tipoFactura;
+
+	@Column(name="valor_factura", nullable=false, precision=10, scale=2)
+	private BigDecimal valorFactura;
 
 	//bi-directional many-to-one association to Proveedor
 	@ManyToOne
@@ -39,12 +51,36 @@ public class Factura implements Serializable {
 		this.idFactura = idFactura;
 	}
 
-	public Timestamp getFechaFactura() {
+	public Date getFechaFactura() {
 		return this.fechaFactura;
 	}
 
-	public void setFechaFactura(Timestamp fechaFactura) {
+	public void setFechaFactura(Date fechaFactura) {
 		this.fechaFactura = fechaFactura;
+	}
+
+	public Date getFechaVencimiento() {
+		return this.fechaVencimiento;
+	}
+
+	public void setFechaVencimiento(Date fechaVencimiento) {
+		this.fechaVencimiento = fechaVencimiento;
+	}
+
+	public String getTipoFactura() {
+		return this.tipoFactura;
+	}
+
+	public void setTipoFactura(String tipoFactura) {
+		this.tipoFactura = tipoFactura;
+	}
+
+	public BigDecimal getValorFactura() {
+		return this.valorFactura;
+	}
+
+	public void setValorFactura(BigDecimal valorFactura) {
+		this.valorFactura = valorFactura;
 	}
 
 	public Proveedor getProveedor() {

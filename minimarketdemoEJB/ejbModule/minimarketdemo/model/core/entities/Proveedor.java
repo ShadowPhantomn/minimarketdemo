@@ -2,6 +2,7 @@ package minimarketdemo.model.core.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -33,15 +34,15 @@ public class Proveedor implements Serializable {
 	@Column(length=30)
 	private String email;
 
-	@Column(nullable=false, length=20)
-	private String estado;
+	@Column(nullable=false)
+	private Boolean estado;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_nacimiento", nullable=false)
 	private Date fechaNacimiento;
 
-	@Column(name="limite_credito", nullable=false)
-	private double limiteCredito;
+	@Column(name="limite_credito", nullable=false, precision=10, scale=2)
+	private BigDecimal limiteCredito;
 
 	@Column(nullable=false, length=50)
 	private String nombre;
@@ -49,7 +50,7 @@ public class Proveedor implements Serializable {
 	@Column(nullable=false, length=15)
 	private String telefono;
 
-	@Column(name="tipo_proveedor", nullable=false, length=10)
+	@Column(name="tipo_proveedor", nullable=false, length=20)
 	private String tipoProveedor;
 
 	//bi-directional many-to-one association to Factura
@@ -99,11 +100,11 @@ public class Proveedor implements Serializable {
 		this.email = email;
 	}
 
-	public String getEstado() {
+	public Boolean getEstado() {
 		return this.estado;
 	}
 
-	public void setEstado(String estado) {
+	public void setEstado(Boolean estado) {
 		this.estado = estado;
 	}
 
@@ -115,11 +116,11 @@ public class Proveedor implements Serializable {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 
-	public double getLimiteCredito() {
+	public BigDecimal getLimiteCredito() {
 		return this.limiteCredito;
 	}
 
-	public void setLimiteCredito(double limiteCredito) {
+	public void setLimiteCredito(BigDecimal limiteCredito) {
 		this.limiteCredito = limiteCredito;
 	}
 
